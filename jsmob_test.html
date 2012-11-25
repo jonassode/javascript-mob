@@ -1,0 +1,99 @@
+<html>
+<head>
+	<script type='text/javascript' src='../javascript-matrix/jsmatrix.js' ></script>
+	<script type='text/javascript' src='../javascript-lineofsight/jslos.js' ></script>
+	<script type='text/javascript' src='jsmob.js' ></script>
+	<script type='text/javascript' src='mobs.js' ></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<style type="text/css">
+		.square {
+		    float: left;
+		    width:32px;
+		    height:32px;
+		    display:block;
+		    overflow:hidden;
+		}
+	</style>
+
+</head>
+<body>
+	<font face="Monospace">
+	<div id="test_area" style="border: 3px silver solid; float:left;">a </div>
+	<div id="text_area"><button onclick="end_turn(1);">End Turn</button></div>
+	</font>
+	<script>
+		function end_turn(turns){
+			for (var i=0;i<turns;i++){
+				jsmob.acts();
+			}
+			paint(matrix);	
+		}
+
+		function paint(matrix){		
+
+			var text = "<table border='0' cellspacing='0' cellpadding='0'>";
+			var image = "";
+			var cell;
+			for( row = 0; row < matrix.rows; row++) {
+				text = text + "<tr>"
+		        	for( col = 0; col < matrix.cols; col++) {
+					cell = matrix.get_cell(row,col)
+					text = text + "<td class='square' style='vertical-align:top; background-image:url(\"floor2.png\");' >";
+					if ( cell.has_item() ) {
+						var items = cell.items();
+						for (var i=0;i<items.length;i++){
+							var item = items[i];
+				                	text = text + "<div class='square' style='background-image:url(\"" +item.image+"\"); float:top; position: absolute;'>&nbsp;</div>";
+						}
+					}
+					text = text + "</div></td>";
+			        }
+				text = text + "</tr>";
+			}
+			text = text + "</table>";
+
+			document.getElementById('test_area').innerHTML = text;
+		}
+
+		var matrix = jsmatrix.matrix2d(15,25);
+
+		matrix.get_cell(0,1).set_item('mob',mobs.drake());
+		matrix.get_cell(1,0).set_item('mob',mobs.drake());
+		matrix.get_cell(1,3).set_item('mob',mobs.slug());
+
+//		matrix.get_cell(0,1).get_item('mob').speed = 15;
+//		matrix.get_cell(0,1).get_item('mob').time_units = 15;
+//		matrix.get_cell(0,2).set_item('mob',mobs.drake());
+//		matrix.get_cell(0,2).get_item('mob').speed = 10;
+//		matrix.get_cell(0,2).get_item('mob').time_units = 10;
+//		matrix.get_cell(0,3).set_item('mob',mobs.drake());
+//		matrix.get_cell(0,3).get_item('mob').speed = 5;
+//		matrix.get_cell(0,3).get_item('mob').time_units = 5;
+
+		//matrix.get_cell(5,10).set_item('mob',mobs.fire());
+			
+		matrix.get_cell(7,1).set_item('mob',mobs.block());
+
+		//matrix.get_cell(10,1).set_item('mob',mobs.heat());
+
+		matrix.get_cell(10,7).set_item('mob',mobs.tree());
+		matrix.get_cell(10,7).get_item('mob').burn = true;
+		for(i=8;i<18;i++){
+			matrix.get_cell( 9,i).set_item('mob',mobs.tree());
+			matrix.get_cell(10,i).set_item('mob',mobs.tree());
+		}
+
+		var player = mobs.centaur();
+		player.player_controlled = true;
+		matrix.get_cell(13,14).set_item('player',player);
+		matrix.get_cell(12,14).set_item('player',mobs.block());
+		matrix.get_cell(11,14).set_item('player',mobs.block());
+
+		paint(matrix);
+	</script>
+
+
+</body>
+<html>
+
+
